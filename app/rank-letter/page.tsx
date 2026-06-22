@@ -1,38 +1,34 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
+import { use, useState } from 'react'
 
-export default function Home() {
-    const [picture, setPicture] = useState<File | null>(null)
-    const [signature, setSignature] = useState<File | null>(null)
+export default function RankLetter() {
+    const [refName, setRefName] = useState('')
+    const [date, setDate] = useState('')
+    const [courseName, setCourseName] = useState('')
+    const [marks, setMarks] = useState('')
+    const [session, setSession] = useState('')
+    const [state, setState] = useState('')
     const [candidateName, setCandidateName] = useState('')
     const [fatherName, setFatherName] = useState('')
-    const [rollNo, setRollNo] = useState('')
-    const [dob, setDob] = useState('')
     const [loading, setLoading] = useState(false)
-    const documents = [
-        { name: "Rank Letter", path: "/rank-letter" },
-        { name: "Provisional Letter", path: "/provisional-letter" },
-        { name: "Loan Letter", path: "/loan-letter" },
-        { name: "Demand Letter", path: "/demand-letter" },
-    ];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!picture || !signature) return
 
         setLoading(true)
         const formData = new FormData()
-        formData.append('picture', picture)
-        formData.append('signature', signature)
+        formData.append('refName', refName)
+        formData.append('date', date)
+        formData.append('courseName', courseName)
+        formData.append('marks', marks)
+        formData.append('session', session)
+        formData.append('stateName', state)
         formData.append('candidateName', candidateName)
         formData.append('fatherName', fatherName)
-        formData.append('rollNo', rollNo)
-        formData.append('dob', dob)
 
         try {
-            const response = await fetch('/api/process-admit-card', {
+            const response = await fetch('/api/process-rank-letter', {
                 method: 'POST',
                 body: formData,
             })
@@ -57,15 +53,85 @@ export default function Home() {
             setLoading(false)
         }
     }
-
     return (
         <div className="app-shell">
             <div className="form-card">
                 <div className="form-header">
-                    <h1>Admit Card</h1>
-                    <p>Upload your photo, signature, and candidate details to generate the completed admit card.</p>
+                    <h1>Rank Letter</h1>
+                    <p>Fill the information below: </p>
                 </div>
                 <form onSubmit={handleSubmit} className="form-grid">
+
+                    <div className="form-row">
+
+                        <label className="form-label">Ref Name</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={refName}
+                            onChange={(e) => setRefName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-row">
+
+                        <label className="form-label">Date</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            required
+                        />
+                    </div>
+
+
+                    <div className="form-row">
+                        {/* TODO: Capitalize the course name */}
+                        <label className="form-label">Course Name</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={courseName}
+                            onChange={(e) => setCourseName(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-row">
+                        <label className="form-label">Marks</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={marks}
+                            onChange={(e) => setMarks(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-row">
+                        <label className="form-label">Session</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={session}
+                            onChange={(e) => setSession(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-row">
+                        <label className="form-label">State</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={state}
+                            onChange={(e) => setState(e.target.value)}
+                            required
+                        />
+                    </div>
+
                     <div className="form-row">
                         <label className="form-label">Candidate Name</label>
                         <input
@@ -77,6 +143,7 @@ export default function Home() {
                         />
                     </div>
                     <div className="form-row">
+                        {/* TODO: Add S/o Sh. */}
                         <label className="form-label">Father Name</label>
                         <input
                             className="form-input"
@@ -86,63 +153,11 @@ export default function Home() {
                             required
                         />
                     </div>
-                    <div className="form-row">
-                        <label className="form-label">Roll No</label>
-                        <input
-                            className="form-input"
-                            type="text"
-                            value={rollNo}
-                            onChange={(e) => setRollNo(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-row">
-                        <label className="form-label">DOB</label>
-                        <input
-                            className="form-input"
-                            type="text"
-                            placeholder="DD.MM.YYYY"
-                            value={dob}
-                            onChange={(e) => setDob(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-row">
-                        <label className="form-label">Upload Picture</label>
-                        <input
-                            className="form-input"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setPicture(e.target.files?.[0] || null)}
-                            required
-                        />
-                    </div>
-                    <div className="form-row">
-                        <label className="form-label">Upload Signature</label>
-                        <input
-                            className="form-input"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setSignature(e.target.files?.[0] || null)}
-                            required
-                        />
-                    </div>
+
                     <div className="form-actions">
                         <button className="submit-button" type="submit" disabled={loading}>
                             {loading ? 'Processing...' : 'Process PDF'}
                         </button>
-                    </div>
-                    {/* Other PDF Processors */}
-                    <div>
-                        {documents.map((letter) => (
-                            <Link
-                                key={letter.path}
-                                href={letter.path}
-                                className="link-button"
-                            >
-                                {letter.name}
-                            </Link>
-                        ))}
                     </div>
                 </form>
 

@@ -89,6 +89,20 @@ body {
     transition: background 0.2s ease;
 }
 
+.link-button {
+    border: none;
+    background: rgb(167, 54, 223);
+    color: #ffffff;
+    padding: 14px 24px;
+    margin-right: 2px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-decoration: none;
+}
+
 .submit-button:disabled {
     background: #93c5fd;
     cursor: not-allowed;

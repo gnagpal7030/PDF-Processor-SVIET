@@ -4,7 +4,6 @@ import fs from 'fs'
 import path from 'path'
 
 export async function POST(request: NextRequest) {
-    console.log('API called')
     try {
         const formData = await request.formData()
         const pictureFile = formData.get('picture') as File
@@ -135,7 +134,7 @@ export async function POST(request: NextRequest) {
         return new Response(Buffer.from(modifiedPdfBytes), {
             headers: {
                 'Content-Type': 'application/pdf',
-                'Content-Disposition': 'attachment; filename="processed.pdf"',
+                'Content-Disposition': `attachment; filename=${candidateName}`,
             },
         })
     } catch (error) {
