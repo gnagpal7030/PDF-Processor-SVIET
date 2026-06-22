@@ -2,6 +2,70 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PDFDocument, StandardFonts } from 'pdf-lib'
 import fs from 'fs'
 import path from 'path'
+import { PDFPage, PDFFont } from 'pdf-lib'
+
+function drawJustifiedParagraph(
+    page: PDFPage,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    font: PDFFont,
+    size: number,
+    lineHeight: number
+): void {
+    const words = text.split(' ');
+    let currentLineWords: string[] = [];
+    let currentY = y;
+
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        const testLine = [...currentLineWords, word].join(' ');
+        const testWidth = font.widthOfTextAtSize(testLine, size);
+
+        if (testWidth <= maxWidth) {
+            currentLineWords.push(word);
+        } else {
+            renderLine(page, currentLineWords, x, currentY, maxWidth, font, size, false);
+            currentY -= lineHeight;
+            currentLineWords = [word];
+        }
+    }
+
+    if (currentLineWords.length > 0) {
+        renderLine(page, currentLineWords, x, currentY, maxWidth, font, size, true);
+    }
+}
+
+function renderLine(
+    page: PDFPage,
+    words: string[],
+    x: number,
+    y: number,
+    maxWidth: number,
+    font: PDFFont,
+    size: number,
+    isLastLine: boolean
+): void {
+    if (words.length === 0) return;
+
+    if (isLastLine || words.length === 1) {
+        page.drawText(words.join(' '), { x, y, size, font });
+        return;
+    }
+
+    const totalWordsWidth = words.reduce((sum, word) => sum + font.widthOfTextAtSize(word, size), 0);
+    const totalSpaceToFill = maxWidth - totalWordsWidth;
+    const numberOfGaps = words.length - 1;
+    const spacePerGap = totalSpaceToFill / numberOfGaps;
+
+    let currentX = x;
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        page.drawText(word, { x: currentX, y, size, font });
+        currentX += font.widthOfTextAtSize(word, size) + spacePerGap;
+    }
+}
 
 export async function POST(request: NextRequest) {
     try {
@@ -82,14 +146,16 @@ ${stateName}`.replace(/^[^\S\r\n]+/gm, '').trim();
         const footer = `It is further certified that this Institute is approved by Engineering Council of India, AICTE (Ministry of HRD), Govt.of India and Govt of Punjab, affiliated to IKGPTU, Jalandhar.`
 
         // 3. Draw Body (Aligned to the exact same margin variable)
-        firstPage.drawText(cleanBody, {
-            x: margin, // Aligned perfectly with the header
-            y: 500,
-            size: textSize,
-            font: timesNewRoman,
-            lineHeight: 17,
-            maxWidth: maxLineWidth,
-        });
+        drawJustifiedParagraph(
+            firstPage,
+            cleanBody,
+            margin,
+            500,
+            maxLineWidth,
+            timesNewRoman,
+            textSize,
+            17
+        );
 
         firstPage.drawText(footer, {
             x: margin, // Aligned perfectly with the header
