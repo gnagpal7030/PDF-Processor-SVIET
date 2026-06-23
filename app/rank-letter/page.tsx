@@ -12,6 +12,7 @@ export default function RankLetter() {
     const [candidateName, setCandidateName] = useState('')
     const [fatherName, setFatherName] = useState('')
     const [loading, setLoading] = useState(false)
+    const [gender, setGender] = useState('')
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -26,6 +27,7 @@ export default function RankLetter() {
         formData.append('stateName', state)
         formData.append('candidateName', candidateName)
         formData.append('fatherName', fatherName)
+        formData.append('gender', gender)
 
         try {
             const response = await fetch('/api/process-rank-letter', {
@@ -88,7 +90,6 @@ export default function RankLetter() {
 
 
                     <div className="form-row">
-                        {/* TODO: Capitalize the course name */}
                         <label className="form-label">Course Name</label>
                         <input
                             className="form-input"
@@ -142,8 +143,18 @@ export default function RankLetter() {
                             required
                         />
                     </div>
+
                     <div className="form-row">
-                        {/* TODO: Add S/o Sh. */}
+                        <label className="form-label">Candidate Gender (He/She)</label>
+                        <input
+                            className="form-input"
+                            type="text"
+                            value={gender}
+                            onChange={(e) => setGender(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-row">
                         <label className="form-label">Father Name</label>
                         <input
                             className="form-input"

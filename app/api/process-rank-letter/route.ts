@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
         const candidateName = formData.get('candidateName')?.toString() || ''
         const fatherName = formData.get('fatherName')?.toString() || ''
         const stateName = formData.get('stateName')?.toString() || ''
+        const gender = formData.get('gender')?.toString() || ''
 
         const header = `
 To,
@@ -141,7 +142,7 @@ ${stateName}`.replace(/^[^\S\r\n]+/gm, '').trim();
         });
 
         // 2. Clean up your body string
-        const cleanBody = `This is to inform you that have been provisionally selected for Admission in 1st year of Four Years degree course ${courseName} on the basis of Test conducted by the Institution in the following Subjects Physics, Chemistry & MATHS taken together for the Session ${session}. He has secured ${marks} Marks out of 120 Marks in SVIET EEE Entrance test.`.replace(/\s+/g, ' ');
+        const cleanBody = `This is to inform you that have been provisionally selected for Admission in 1st year of Four Years degree course ${courseName} on the basis of Test conducted by the Institution in the following Subjects Physics, Chemistry & MATHS taken together for the Session ${session}. ${gender} has secured ${marks} Marks out of 120 Marks in SVIET EEE Entrance test.`.replace(/\s+/g, ' ');
 
         const footer = `It is further certified that this Institute is approved by Engineering Council of India, AICTE (Ministry of HRD), Govt.of India and Govt of Punjab, affiliated to IKGPTU, Jalandhar.`
 
