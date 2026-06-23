@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useState } from 'react'
+import { useState } from 'react'
 
 export default function RankLetter() {
     const [refName, setRefName] = useState('')
